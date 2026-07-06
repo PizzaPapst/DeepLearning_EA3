@@ -32,14 +32,14 @@ Die Netzarchitektur ist wie folgt aufgebaut:
 - **Epochen**: Das finale Modell wurde über 10 Epochen trainiert.
 
 ## Modell Kennzahlen
-- **Accuracy**: 
-- **Loss**: 
+- **Accuracy**: 0.2817
+- **Loss**: 3.4432
 
 ### Top k Evaluation
-- **Top 1 accuracy**: %
-- **Top 5 accuracy**: %
-- **Top 10 accuracy**: %
-- **Top 100 accuracy**: %
+- **Top 1 accuracy**: 53%
+- **Top 5 accuracy**: 69.9%
+- **Top 10 accuracy**: 78.6%
+- **Top 100 accuracy**: 97.2%
 
 ## Verwendete Technologien
 

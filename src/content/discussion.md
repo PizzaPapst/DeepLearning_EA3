@@ -18,7 +18,7 @@ Ich habe zunächst mit kleineren Datensätzen trainiert und Schrittweise die Inp
 | 3 | 20%       |32       |10       |0.001       |100    | 5.25     |0.0796          |11.8-33.6-45-4             |   Niedrigere Lernrate ausgetestet. Keine besseren Ergebnisse erzielt, da bereits zuvor Loss noch sank. Für 0,001 wahrscheinlich deutlich mehr Epochen notwendig.         |
 | 4 | 20%       |32       |10       |0.01       |200    |4.63      |0.13          |22.4-42-8-53             |   Erhöhung der Units auf 200 um bessere Ergebnisse zu erzielen. War nicht der Fall, könnte für großen Datensatz anders sein und müsste untersucht werden. Im weiteren Verlauf wird jedoch bei 100 Units geblieben.       |
 | 5 | 20%   |64     |10       |0.01      |100    |3.77      |0.215          |51-76-86.4            | Höhere Batchgröße für schnelleres Training probiert. Keine schlechteren Ergebnisse als mit 32er Batchsize.            |
-| 6 | 100%   |64     |20       |0.01      |100    |     |        |        | Das finale Modell. Beste Parameter aus vorherigen tests wurden genutzt.            |
+| 6 | 100%   |64     |20       |0.01      |100    | 3.44    |0.2871        |53-69.6-78.6        | Das finale Modell. Beste Parameter aus vorherigen tests wurden genutzt.            |
 
 *Hinweis: TopK misst das fertig trainierte Modell auf einer Stichprobe von 500 Beispielen.*
 
