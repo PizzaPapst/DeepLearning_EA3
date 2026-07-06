@@ -15,6 +15,12 @@ export function Discussion() {
               ul: { component: 'ul', props: { className: 'list-disc list-inside space-y-2 mb-4 text-foreground' } },
               li: { component: 'li', props: { className: 'ml-4' } },
               strong: { component: 'strong', props: { className: 'font-semibold text-foreground' } },
+              table: { component: 'table', props: { className: 'w-full text-sm border-collapse my-4 text-foreground' } },
+              thead: { component: 'thead', props: { className: 'bg-muted text-muted-foreground' } },
+              tbody: { component: 'tbody', props: { className: 'divide-y divide-border' } },
+              tr: { component: 'tr', props: { className: 'border-b border-border' } },
+              th: { component: 'th', props: { className: 'px-3 py-2 text-left font-semibold border border-border whitespace-nowrap' } },
+              td: { component: 'td', props: { className: 'px-3 py-2 border border-border' } },
             },
           }}
         >

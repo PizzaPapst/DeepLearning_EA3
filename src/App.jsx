@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { Learning } from './pages/Learning'
+import { LanguageModel } from './pages/LanguageModel'
 import { Discussion } from './pages/Discussion'
 import { Documentation } from './pages/Documentation'
 
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Learning />,
+        element: <LanguageModel />,
       },
       {
         path: 'discussion',

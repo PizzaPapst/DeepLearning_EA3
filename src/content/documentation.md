@@ -1,6 +1,45 @@
-# Dokumentation 
+# Dokumentation
 
-Diese Internetseite wird über die Hostingplatform Render bereitgestellt. Im nachfolgenden ein Überblick zu dem Projekt. 
+Diese Webanwendung veranschaulicht die Textgenerierung mit einem rekurrenten neuronalen Netz (LSTM) direkt im Browser. Das Modell wurde mit TensorFlow.js in Node.js vorab trainiert.
+
+## Vorraussetzungen
+
+- **Datensatz / Textbasis**: Das Modell wurde auf dem Buch *"Die Tier- und Pflanzenwelt des Süsswassers. Zweiter Band."* von C. Apstein et al. trainiert.
+- **Vokabular**: Nach Bereinigung aller Satzzeichen und Umwandlung aller Wörter in Kleinschreibung umfasst das Vokabular 11021 eindeutige Wörter.
+- **Sequenzlänge**: Das Modell prognostiziert das nächste Wort basierend auf einer Sequenz der letzten 5 Wörter.
+
+## Modellarchitektur
+
+Die Netzarchitektur ist wie folgt aufgebaut:
+
+1. **Embedding-Schicht**:
+   - Initialisierer: `random-uniform`
+   - Ausgabe-Dimension: 5 (Vektordarstellung der Wörter)
+2. **Erste LSTM-Schicht**:
+   - 100 Units
+   - Gibt Sequenzen zurück (`returnSequences: true`)
+3. **Zweite LSTM-Schicht**:
+   - 100 Units
+4. **Dense-Schicht (Ausgabeschicht)**:
+   - Units: 11021 (entspricht der Vokabulargröße)
+   - Aktivierungsfunktion: `softmax`
+
+## Trainingsparameter (Wie vorgegeben)
+
+- **Verlustfunktion (Loss)**: Categorical Cross-Entropy
+- **Optimierer**: Adam mit einer Lernrate von `0.01`
+- **Batch-Größe**: 32
+- **Epochen**: Das finale Modell wurde über 10 Epochen trainiert.
+
+## Modell Kennzahlen
+- **Accuracy**: 
+- **Loss**: 
+
+### Top k Evaluation
+- **Top 1 accuracy**: %
+- **Top 5 accuracy**: %
+- **Top 10 accuracy**: %
+- **Top 100 accuracy**: %
 
 ## Verwendete Technologien
 
@@ -10,21 +49,8 @@ Diese Internetseite wird über die Hostingplatform Render bereitgestellt. Im nac
 - **shadcn/ui:** Dient dazu, dass Komponenten, Hover-Effekte und Animationen nicht selbst implementieren werden müssen.
 - **Phosphor Icons:** Umfangreiche, schöne und kostenlose Icon-Library. Bessere Alternative zu FontAwesome meiner Meinung nach.
 - **markdown-to-jsx:** Um Markdown in React-Komponenten umzuwandeln. Verwendet um die Dokumentation und Diskussion einfach in Markdown-Dokumenten zu schreiben und in die Wewanwendung rendern zu lassen.
-- **TensorFlow.js (@tensorflow/tfjs)*:* Die Hauptbibliothek für das Erstellen und Trainieren der neuronalen Netze direkt im Browser.
-- **TFJS VIS (@tensorflow/tfjs vis):** Eine Erweiterung zur visuellen Darstellung von Trainingsmetriken und Datenpunkten durch Scatterplots und Liniendiagramme
+- **TensorFlow.js Node (@tensorflow/tfjs-node):** Die Hauptbibliothek für das Erstellen und Trainieren der neuronalen Netze in Javascript.
 
 ## Anleitung und Aufbau der Anwendung
 
-Die Anwendung veranschaulicht den Lernprozess neuronaler Netze anhand einer festgelegten mathematischen Funktion. Der Ablauf und die Bedienung sind in mehrere Abschnitte unterteilt.
-
-### Parameter einstellen
-Im oberen Bereich der Seite befinden sich Eingabefelder für die Konfiguration der Experimente. Hier lassen sich die Anzahl der generierten Datenpaare N, die Batchgröße für das Training sowie die Epochen für die drei unterschiedlichen Modelle individuell festlegen. Ein Klick auf den Button "Training starten" generiert die Daten neu und beginnt den Lernprozess.
-
-### Datenvisualisierung
-Nach dem Start werden als Erstes die generierten Daten dargestellt. Auf der linken Seite sind die reinen Trainingsdaten und Testdaten der mathematischen Funktion ohne Rauschen zu sehen. Auf der rechten Seite werden dieselben Datenpunkte mit einem hinzugefügten Gaussschen Rauschen visualisiert.
-
-### Trainingsfortschritt
-Darunter befinden sich drei Graphen, die den Live Fortschritt des Trainings zeigen. Hier wird der Fehlerwert MSE für das Ground Truth Modell, das Best Fit Modell und das Overfit Modell pro Epoche aufgezeichnet.
-
-### Modellvorhersagen
-Sobald das Training abgeschlossen ist, wird der untere Bereich der Seite eingeblendet. Hier werden die Vorhersagen der drei Modelle detailliert mit den echten Daten verglichen. Für jedes Modell gibt es einen Graphen für die Trainingsdaten und einen für die Testdaten. Zusätzlich wird der jeweilige finale Fehlerwert unter den Diagrammen als Zahl angezeigt. So lässt sich optimal vergleichen, wie gut die Modelle generalisieren oder ob sie ein Overfitting aufweisen.
+Das obenstehende Textfeld kann mit beliebigen Worten gefüllt werden. Ab dem 5 Wort steht eine Worterkennung zur Verfügung. Mit klick auf "Vorhersagen" werden 5 Wörter vorgeschlagen, wobei das erste Wort die höchste Wahrscheinlichkeit hat, das nächste Wort in der Sequenz zu sein. Mit klick auf "Nächstes Wort" wird das Wort mit der höchsten Wahrscheinlichkeit hinzugefügt und die Vorhersagen werden neu berechnet. Mit klick auf "Auto" werden Wörter automatisch hinzugefügt, bis 10 Wörter generiert wurden. Mit klick auf "Reset" wird der Text zurückgesetzt.

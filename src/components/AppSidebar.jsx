@@ -8,14 +8,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { House, ListChecks, UploadSimple, ChatText, Files, Brain } from "@phosphor-icons/react"
+import { House, ListChecks, UploadSimple, ChatText, Files, Robot } from "@phosphor-icons/react"
 import { Link, useLocation } from "react-router-dom"
 
 const items = [
   {
-    title: "FFNN",
+    title: "Sprachmodell",
     url: "/",
-    icon: Brain,
+    icon: Robot,
   },
   {
     title: "Diskussion",

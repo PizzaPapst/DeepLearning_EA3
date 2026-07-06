@@ -1,193 +1,137 @@
-# React + Vite
+# EA 3: Language Model mit LSTM
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Abschlussbedingungen
+**Fällig:** Mittwoch, 8. Juli 2026, 08:00
+**Thema** Trainieren eines Language Models (LM) zur Wortvorhersage mit einem rekurrenten Long Short-Term 
+**Memory** (LSTM) Network und dem TensorFlow.js (TFJS) Framework/API.
 
-Currently, two official plugins are available:
+**Bearbeitungszeit:** 30–35 Stunden, je nach Vorkenntnissen und Erfahrung.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Voraussetzungen:** Kapitel 1–16 bis einschließlich ARC - Architectures.
 
-## React Compiler
+**Kompetenzerwerb/Lernziele:** Nach der Bearbeitung der Aufgabe sollten Sie: 
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Verstehen, wie man Sprache mit einem rekurrenten Netzwerk wie Long Short-Term Memory (LSTM) und allgemeiner in einem KI-System verarbeitet.
+Wissen, was ein Language-Modell (LM) ist, und wie man ein solches trainiert.
+Ein Long Short-Term Memory (LSTM) Netzwerk aufsetzen und trainieren können. 
+Vorbereitung: Recherchieren Sie zu Language-Models und Wortvorhersage (Next Word Prediction), siehe Hintergrundwissen.
 
-## Expanding the ESLint configuration
+## Aufgabenstellung:  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Erstellen Sie ein Language Models (LM) zur Wortvorhersage. Trainieren Sie dazu als Modell ein Long Short-Term Memory (LSTM) Netzwerk auf der Basis der Daten (siehe den Punkt „Daten“ unten) zur Wortvorhersage (Next Word Prediction). Mittels des trainierten LSTM Language-Models kann autoregressiv ein Text generiert werden, in dem das jeweils vorhergesagte Wort an den vorhandenen Text angehängt wird.
 
-# Einsendeaufgabe 1 – Bilderkennung (Klassifikation) mit dem ml5 Framework
+Modell und Optimierung:  Nutzen Sie für Ihr Modell die folgende Netzwerkarchitektur und Parametern für den Lernalgorithmus:
 
-**Bearbeitungszeit:** 15–20 Stunden, je nach Vorkenntnissen und Erfahrung.
+Stacked LSTM: 2 hidden Layer (in sich rekursiv) mit je 100 LSTM Units (Sie können auch mit anderen/größeren Architekturen experimentieren).
+Softmax Output mit der Dimension des Dictionaries.
+Als Loss nutzen Sie Cross-Entropy.
+Lernrate und Optimizer: Adam mit Lernrate(Learning Rate)=0.01 oder 0.001 und Batch-Size=32 (Sie können auch mit anderen experimentieren).
+Anzahl der Trainings-Epochen (Epochs): Ausprobieren, dazu den Loss beobachten (Sie können dazu den Tensorflow (TF) Visor nutzen).
 
-**Voraussetzungen:** Kapitel 1 und 2 bis einschließlich *Learning from Data*.
+## Interaktion: 
 
----
+- I1: Der Nutzer kann einen Text (Prompt) eingeben. Dieser sollte nur aus vollständigen, durch Leerzeichen getrennten Wörtern (Tokens) bestehen. Er kann dann jederzeit (am Ende eines vollständig eingegebenen Wortes) den Button „Vorhersage“ betätigen und erhält eine Darstellung der wahrscheinlichsten nun folgenden Wörter mit deren Wahrscheinlichkeiten. Er kann eines dieser Wörter auswählen, sodass es an den Text angehängt wird. Daraufhin beginnt automatisch eine neue Wortvorhersage.
 
-## Lernziele
+- I2: Der Nutzer kann mittels des „Weiter“ Buttons das wahrscheinlichste vorhergesagte Wort annehmen. Diese wird an den bisher eingegebenen Text angehängt, darauf beginnt automatisch eine neue Wortvorhersage. Der Nutzer kann also über wiederholtes Betätigen des „Weiter“ Buttons einen Text generieren lassen.
 
-Nach der Bearbeitung der Aufgabe sollten Sie:
+- I3: Der Nutzer kann über einen „Auto“ Button automatisch bis zu 10 Wörter vorhersagen lassen. Diese automatische Vorhersage kann mittels eines „Stopp“ Buttons unterbrochen werden.
 
-- Ihr Wissen über Web-Anwendungen wieder aufgefrischt haben und — besonders durch den Austausch mit anderen — neue nützliche Tipps und Frameworks kennengelernt haben.
-- Wissen, wie man ein vor-trainiertes KI-Modell für eine Web-Anwendung nutzt.
+- I4: Über ein „Reset“ Button werden der eingegebene Text und das Netzwerk zurückgesetzt.
 
-**Vorbereitung:** Verschaffen Sie sich einen Überblick über das [ml5.js Framework](https://ml5js.org/). Vollziehen Sie das *Image Classification Tutorial* nach.
+Buttons: I1 Vorhersage, I2 Weiter, I3 Auto, Stopp und I1 die Auswahl eines der nächsten Wörter.
 
----
+## Experimente und Fragestellungen: 
 
-## Aufgabenstellung
+1) Experimentieren Sie mit der Netzwerkarchitektur. Dokumentieren und begründen Sie Ihre finale Architektur.
 
-Erweitern Sie das ml5 Image Classification Tutorial *(es gibt auch eine neuere Version, siehe Coding und Tutorials)* so, dass ein Nutzer beliebige Bilder klassifizieren kann. Sie verwenden dazu — wie im Tutorial — ein bestehendes, vor-trainiertes Modell. Sie müssen also **nichts selbst trainieren/anlernen**.
+2) Notieren Sie als Resultat, wie oft die Vorhersage genau richtig ist (k=1), und wie oft das korrekte nächste Wort unter den ersten k Worten, die Sie vorhersagen liegt, mit k gleich 5, 10, 20 und 100. Sie können auch die Perplexity (siehe Hintergrund) als Maß Ihrer Resultate nutzen.
 
-### A1 – Beispiel-Bilder
+3) Können Sie Ihre ursprünglichen Trainingsdaten mittels des trainierten Models rekonstruieren?  (überlegen Sie, ob sich daraus ein Datenschutzproblem ergibt).
 
-Zeigen Sie **Beispiel-Bilder**, jeweils **drei** für korrekte und **drei** für falsche Klassifikation, zusammen mit den Ergebnissen der Klassifikation als Diagramm (siehe [Resultate und Visualisierung](#resultate-und-visualisierung)).
+**Visualisierung:** Sie können, dazu außer der API von TF, z. B. folgende Bibliotheken zur Visualisierung der Ergebnisse als Diagramm nutzen: Plotly, D3.
 
-- Die Klassifikation wird direkt in der Anwendung berechnet.
-- Machen Sie bei der Darstellung deutlich, welche Bilder korrekt oder falsch klassifiziert werden.
-- Die Bilder können aus dem ImageNet-Datensatz (zum Image Classification Tutorial) stammen oder von Ihnen kommen. Sie können Bilder auch künstlich modifizieren.
+**Diskussion:** Diskutieren Sie Ihre Ergebnisse (unter den Resultaten auf der gleichen HTML-Seite, max. 10 Sätze). Was haben Sie beobachtet/gelernt? 
 
-### A2 – Nutzer-Upload
+Dokumentation: Nutzen Sie die gleiche HTML-Seite (unter der Diskussion) wie zur Abgabe Ihrer Lösung zur Dokumentation der folgenden Aspekte:
 
-Der Nutzer soll ein **eigenes Bild** in die Anwendung laden und klassifizieren lassen können (siehe [Interaktion](#interaktion)).
+1) Technisch: Listen Sie alle verwendeten Frameworks auf und erklären Sie kurz (1–3 Sätze) wozu Sie diese verwenden. Dokumentieren Sie technische Besonderheiten Ihrer Lösung.
 
----
+2) Fachlich: Erläutern Sie Ihre Implementierung der Logik und alles, was für ihre Lösung wichtig ist (Ansatz, Resultate, Quellen, etc.)
 
-## Interaktion
+Schreiben Sie bitte nichts in die Moodle Abgabe-Felder.
 
-Der Nutzer kann ein Bild zur Klassifikation:
+**Hinweise:** 
 
-- **hochladen** (Datei-Dialog), oder
-- per **Drag-and-Drop** in die Anwendung ziehen.
+Wortvorhersage ist eine Multi-Class Classification. Nutzen Sie als Objektivfunktion den Categorical Cross-Entropy Loss. 
 
-Das Bild wird zunächst dargestellt und anschließend automatisch oder mittels eines **„Classify"-Buttons** klassifiziert.
+Starten Sie mit wenigen Daten, also einem kurzen Text. Schauen Sie sich die Accuracy für die k Werte an. Probieren Sie dann mehr Daten hinzuzufügen. 
 
----
+**Fehlerbehandlung, Test und QA:** Stellen Sie sicher, dass die Eingabe das richtige Format hat.
 
-## Resultate und Visualisierung
+**Daten:** Wählen Sie aus den folgenden Datensätzen (oder nutzen Sie einen eigenen):
 
-Das Netzwerk gibt eine **Wahrscheinlichkeitsverteilung** aus. Diese Werte können als *Confidence* interpretiert werden. Sie stellen die Confidence als Klassifikationsergebnis in Form eines **Diagramms** (Balken-, Pie-, etc.) dar.
+- Internet Archive → Books
+- CC100 German:  https://datasets.quantumstat.com/ (Paper: Learning multilingual named entity recognition from Wikipedia)
+- Plenarprotokolle des Deutschen Bundestags: https://www.bundestag.de/services/opendata
+- German-language E-Mail corpus
+- Bücher aus dem Projekt Gutenberg: https://www.gutenberg.org/
+- 10k German News Articles: https://www.kaggle.com/datasets/abhishek/10k-german-news-articles/data
+**User Experience (UX):**  Beachten Sie die Human/Mensch-Computer-Interaction (HCI) Kriterien beim Interaktionsdesign: ISO 9241-11 Anforderungen an die Gebrauchstauglichkeit und ISO 9241-110 Interaktionsprinzipien. Ihre Anwendung sollte funktional (Aufgabenangemessenheit) und benutzerfreundlich (Usability) und mit angemessenem Feedback und einer [kontextsensitive] Hilfe ausgestattet sein.
 
-- In den Diagrammen sollen die **Zahlenwerte der Confidence in Prozent** für die dargestellten Klassen stehen.
-- Zur Visualisierung können Sie Bibliotheken wie **Plotly** oder **Chart.js** nutzen (siehe [Libraries](#libraries)).
+**Gestaltung:** Achten Sie auf eine sinnvolle Semantik bei der Farbgestaltung und ein übersichtliches Layout. Siehe dazu: material.io - Design Guidance and Code
 
----
+**Libraries:** Sie können, dazu außer der API von TF (Visor), z. B. folgende Bibliotheken nutzen: Plotly, D3, Chart.js, etc.
 
-## Layout
+Arbeitsumgebung: JS-, HTML-IDE (z. B. Atom, WebStorm, Visual Studio Code), [local] Web-Server.
 
-Stellen Sie Ihre Lösung in **zwei Spalten** dar: links das Bild, rechts das Diagramm mit der Klassifikation.
+Zum Lernen auf einem Server, z. B.: Google colab
 
-| Bereich | Inhalt |
-|---------|--------|
-| **R1** | Zunächst die drei richtig klassifizierten Bilder übereinander, dann die drei falschen Klassifizierungen. |
-| **R2** | Darunter das vom Nutzer geladene Bild mit den zugehörigen Interaktionselementen. |
+**Hintergrundwissen:** 
 
----
+Loss
 
-## Diskussion
+https://gombru.github.io/2018/05/23/cross_entropy_loss/
 
-Diskutieren Sie Ihre Ergebnisse **unter den Resultaten auf der gleichen HTML-Seite** (max. 10 Sätze):
+Next Word Prediction
 
-- Was haben Sie beobachtet/gelernt?
-- Bei welchen Bildern hat die Klassifikation funktioniert und bei welchen nicht — und warum?
+https://towardsdatascience.com/next-word-prediction-with-nlp-and-deep-learning-48b9fe0a17bf
+Building a Next Word Predictor in Tensorflow
+Language Model (LM)
 
----
-
-## Dokumentation
-
-Nutzen Sie **dieselbe HTML-Seite** (unter der Diskussion) zur Dokumentation der folgenden Aspekte:
-
-### 1. Technisch
-
-Listen Sie alle verwendeten Frameworks auf und erklären Sie kurz (1–3 Sätze), wozu Sie diese verwenden. Dokumentieren Sie auch technische Besonderheiten Ihrer Lösung.
-
-### 2. Fachlich
-
-Erläutern Sie Ihre Implementierung der Logik und alles, was für Ihre Lösung wichtig ist (Ansatz, Resultate, Quellen, etc.).
-
-> **Bitte nichts in die Moodle-Abgabe-Felder schreiben.**
-
----
-
-## Anwendung und Abgabe
-
-Sie erstellen eine **Web-Anwendung** und stellen diese auf einem **öffentlichen Web-Server** bereit (siehe Kursplan und [Web-Anwendungen und Frameworks: Client-side Web APIs by MDN](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs)).
-
----
-
-## Hinweise
-
-- Das ml5 Framework ist ein High-Level-API zu TensorFlow (TF) bzw. TFJS. Für mehr Kontrolle über die Logik der Anwendung muss eine tiefere Schnittstelle/API gewählt werden.
-- **Fehlerbehandlung, Test und QA:** Prüfen Sie, dass die Bilder das richtige Format haben.
-
-### User Experience (UX)
-
-Beachten Sie die **HCI-Kriterien** beim Interaktionsdesign:
-
-- [ISO 9241-11](https://www.iso.org/standard/63500.html) – Anforderungen an die Gebrauchstauglichkeit
-- [ISO 9241-110](https://www.iso.org/standard/75258.html) – Interaktionsprinzipien
-
-Ihre Anwendung sollte:
-
-- **Funktional** sein (Aufgabenangemessenheit)
-- **Benutzerfreundlich** sein (Usability)
-- Mit angemessenem **Feedback** und einer **kontextsensitiven Hilfe** ausgestattet sein.
-
-### Gestaltung
-
-- Achten Sie auf eine sinnvolle **Semantik bei der Farbgestaltung** und ein übersichtliches Layout.
-- Referenz: [Material Design – material.io](https://m3.material.io/)
-
----
-
-## Daten
-
-ImageNet-Datensatz aus dem Tutorial für Beispiel-Bilder:
-
-| Ressource | Link |
-|-----------|------|
-| Paper | [arxiv.org/abs/1409.0575](https://arxiv.org/abs/1409.0575) |
-| Dataset | [image-net.org](https://www.image-net.org/index.php) |
-| Challenges | [LSVRC Challenges](https://www.image-net.org/challenges/LSVRC/) |
-
----
-
-## Zusätzliches Hintergrundwissen
-
-- **Paper zu MobileNets** for Mobile Vision Applications: [arxiv.org/abs/1704.04861](https://arxiv.org/abs/1704.04861)
-
----
-
-## Libraries
-
-- [Chart.js](https://www.chartjs.org/)
-- [Plotly.js](https://plotly.com/javascript/)
-
----
-
-## Coding und Tutorials
-
-- [ml5.js Examples](https://ml5js.org/) *(neue Version, aber nicht so ausführlich)*
-
----
-
-## Arbeitsumgebung
-
-- **IDE:** JS-/HTML-IDE (z. B. Atom, WebStorm, Visual Studio Code)
-- **Web-Server:** Lokaler Web-Server
-
-**Testumgebung:** Chrome [unter macOS]
-
----
-
-## Bewertungskriterien und Punkte
-
-Bewertet werden **Logik**, **User Experience (UX)** und **Gestaltung**:
-
-| Kriterium | Punkte |
-|-----------|--------|
-| Funktionsfähigkeit und Vollständigkeit der Anwendung entsprechend der Aufgabenstellung | 8 |
-| Experimente, Resultate und Diskussion; Auswahl geeigneter und interessanter Beispiele | 8 |
-| Dokumentation (technisch und fachlich) | 3 |
-| User Experience (UX) und User Interaktion (HCI, Interaktionsdesign, Dialoggestaltung, Usability, Hilfe) | 3 |
-| Gestaltung und Visualisierung (Farben, Formen, Screen-Layout, Text, Semantik) | 3 |
-| **Gesamtpunktzahl** | **25** |
+T. Mikolov  et.al., Recurrent neural network based language model 
+https://en.wikipedia.org/wiki/Language_model 
+https://towardsdatascience.com/language-models-1a08779b8e12 
+https://medium.com/syncedreview/language-model-a-survey-of-the-state-of-the-art-technology-64d1a2e5a466
+Context based Text-generation using LSTM networks
+Perplexity for LM
+
+https://homes.cs.washington.edu/~nasmith/papers/plm.17.pdf
+
+https://leimao.github.io/blog/Entropy-Perplexity/
+
+Coding:  
+
+Danfo.js for manipulating and processing data (like Pandas for Python)
+Next Word Prediction with NLP and Deep Learning
+A Simple Autocomplete Model
+https://github.com/seyedsaeidmasoumzadeh/Predict-next-word
+https://www.tensorflow.org/js/demos
+NLP Keras model in browser with TensorFlow.js
+How to create a language translator using Tensorflow.JS
+lstm-text-generation
+translation
+sentiment
+jena-weather
+Arbeitsumgebung: JS-, HTML-IDE (z. B. Atom, WebStorm, Visual Studio Code), [local] Web-Server.
+
+Testumgebung: Chrome [unter macOS].
+
+Bewertungskriterien und Punkte: 
+
+Funktionsfähigkeit und Vollständigkeit der Anwendung entsprechend der Aufgabenstellung (15 Punkte)
+Modellperformance (5 Punkte)
+Experimente, Resultate und Diskussion (10 Punkte)
+Dokumentation, technisch und fachlich (5 Punkte)
+User Experience (UX) und User Interaktion (HCI, Interaktionsdesign, Dialoggestaltung, Usability, Hilfe) (5 Punkte)
+Gestaltung und Visualisierung (Farben, Formen, Screen-Layout, Text, Semantik) (5 Punkte)
+Gesamtpunktzahl: 45 Punkte

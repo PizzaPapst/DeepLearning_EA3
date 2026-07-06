@@ -13,7 +13,7 @@ export function Layout() {
             <SidebarTrigger className="-ml-1" />
             <div className="flex flex-1 items-center justify-between">
               <h1 className="text-lg font-semibold tracking-tight">
-                EA2 – Regression mit FFNN
+                EA3 – Sprachmodell mit LSTM
               </h1>
               <div className="flex items-center gap-4 text-sm text-text-subinfo">
                 <span>Deep Learning</span>

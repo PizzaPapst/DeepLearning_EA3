@@ -1,19 +1,34 @@
 # Diskussion
 
-Das Trainieren der Modelle mit TFJS und die Darstellung über TFJS VIS haben erstaunlich gut funktioniert. Größere Probleme hatte ich dann allerdings beim Einstellen der richtigen Parameter.
+Ich habe zunächst probiert aus perfomancegründen mein Modell mit klassischem Python TF in Google Colab zu trainieren und anschließend in TFJS zu konvertieren. Die Konvertierung hatte leider nicht funktioniert und ich konnte das Problem auch nicht lösen. 
 
-Das Lernen auf den Ground Truth Daten hat gut funktioniert und stets gute Ergebnisse geliefert. Hier kann natürlich kein Overfitting auftreten, da kein Fehler in den Trainingsdaten besteht, den unser Netzwerk erlernen könnte. Daher waren auch hier die Vorhersagen auf Trainingsdaten sowie auf Testdaten stets ähnlich und in einem sehr niedrigen Fehlerbereich (MSE < 0.05).
+Ein nächster Versuch war training im Browser unter der Nutzung von WebGL. Da allerdings nur Training mit einem Tensor von 16.384 × 16.384 möglich ist, aber 30.808 × 30.808 benötigt wurde, war auch dies keine Option.
 
-Beim Bestfit Modell mit verrauschten Daten war das Ganze schon etwas schwieriger. Mit den richtigen Parametereinstellungen war es schließlich auch hier möglich, gute Ergebnisse zu erzielen. Der MSE lag für Trainingsdaten und Testdaten bei ungefähr 0,1. Die Gefahr bestand bereits bei diesem Modell, in ein Overfitting zu geraten. Für mich hat es mit 80 bis 100 Epochen gut gepasst und verlässliche Ergebnisse erzeugt.
+Lokales training mittels Node.js, war dann der dritte Versuch. Nach anfänglichen schwierigkeiten und langsamen geschwindigkeiten konnte tensorflow.js node korrekt eingerichtet und genutzt werden. Modelle konnte ich nun hier vortrainieren und anschließend an mein Frontend ausliefern und anwenden. 
 
-Das Overfit Modell war das anspruchsvollste, da der Unterschied zwischen Trainingsdaten und Testdaten stets klein blieb und kein wirklich starker Overfitting Effekt erzielt werden konnte. Oft lagen die Vorhersagen auf den Trainingsdaten bei einem MSE von circa 0,04 und auf den Testdaten bei 0,08. Ich habe probiert, diesen Effekt durch verschiedenste Einstellungen zu verstärken. Allerdings erzielte ich weder bei sehr vielen Epochen (>1000), noch bei anderen Batchgrößen oder anderen Neuronenschichten (64 auf 32) deutlichere Effekte. Meine Vermutung ist, dass die Daten eventuell zu wenig verrauscht sind und der Fehler dadurch nicht so hoch ausfällt. Alternativ könnten 100 Datenpaare auf einem relativ kleinen Intervall bereits genug Datenpunkte liefern, um das zugrunde liegende Verhalten gut lernen zu können. Ein testweises Verringern auf N=50 Datenpaare hat den Effekt deutlicher gemacht, führte aber auch bei den anderen Modellen zu sichtbar schlechteren Ausgaben.
+## Trainingsprozess
+Ich habe zunächst mit kleineren Datensätzen trainiert und Schrittweise die Inputgröße erhöht. AUßerdem habe ich verschiedene Parameter getestet um die Auswirkung auf Loss, Accuracy und TopK zu vergleichen. nachfolgend eine Übersicht meiner Experimente und der Auswirkung auf die Ergebnisse:
 
-Ein Punkt, der mir generell aufgefallen ist, sind die unterschiedlichen Ergebnisse des Lernens und Vorhersagens auf Basis der zufällig erstellten Datenpunkte. Je nach Durchlauf waren die Ergebnisse bei exakt gleichen Parametern deutlich besser oder schlechter als in vorherigen Versuchen.
+### Durchgeführte Experimente
 
-## Parameter
-- N = 100 Datenpaare waren schon eine Gute Trainingsgrundlage auf dem Intervall -2 bis 2. Wurde dabei belassen.
-- Die zwei Schichten mit je 100 Neuronen und ReLU ermöglichen dem Netz die kurvige Form richtig zu lernen. Sigmoid lieferte schlechtere Ergebnisse. Weniger Neuronen gingen auch z.B. 64->32
-- Der Adam Optimizer mit einer Lernrate von 0.01 war vorgegeben, ging auch gut damit.
-- 32er Batches waren ein guter Mittelweg für schnelle und regelmäßige Updates. Ebenfalls vorgegeben.
-- Für das Ground Truth und das Best Fit Modell reichen 100 Epochen aus, um gute Ergebnisse zu finden.
-- Beim Overfit Modell sind 220 Epochen die Standardeinstellung, damit das Netz das rauschen mitlernt.
+| # | Subset | Batch | Epochen | Lernrate | Units | Loss | Accuracy | Top 1-5-10 (%) | Beobachtung |
+|---|--------|-------|---------|----------|-------|------|----------|------------ |-------------|
+| 1 | 20%    |32     |10       |0.01     |100    |3.96   |0.182    |45.6-69.8-77.8             |Vorgeschlagene Parameter mit kleinem Datensatz. Loss sinkt kontinuierlich, aber Accuracy relativ gering.            |
+| 2 | 20%    |32     |20       |0.01     |100    |2.28      |0.4578          | 77.8-90-94.6            |Loss sinkt weiter stetig, Accuracy steigt langsam und wird besser. TopK deutlich besser als zuvor.             |
+| 3 | 20%       |32       |10       |0.001       |100    | 5.25     |0.0796          |11.8-33.6-45-4             |   Niedrigere Lernrate ausgetestet. Keine besseren Ergebnisse erzielt, da bereits zuvor Loss noch sank. Für 0,001 wahrscheinlich deutlich mehr Epochen notwendig.         |
+| 4 | 20%       |32       |10       |0.01       |200    |4.63      |0.13          |22.4-42-8-53             |   Erhöhung der Units auf 200 um bessere Ergebnisse zu erzielen. War nicht der Fall, könnte für großen Datensatz anders sein und müsste untersucht werden. Im weiteren Verlauf wird jedoch bei 100 Units geblieben.       |
+| 5 | 20%   |64     |10       |0.01      |100    |3.77      |0.215          |51-76-86.4            | Höhere Batchgröße für schnelleres Training probiert. Keine schlechteren Ergebnisse als mit 32er Batchsize.            |
+| 6 | 100%   |64     |20       |0.01      |100    |     |        |        | Das finale Modell. Beste Parameter aus vorherigen tests wurden genutzt.            |
+
+*Hinweis: TopK misst das fertig trainierte Modell auf einer Stichprobe von 500 Beispielen.*
+
+## Weitere Reflexion
+- Der Loss des Modells nähert sich sehr schnell einem bestimmten Wert an, während der Zuwachs an Genauigkeit (Accuracy) zwischen den Epochen minimal ist.
+- Die deutsche Sprache enthält sehr viele Artikel und Bindewörter. Daher sind die wahrscheinlichsten nächsten Wörter oft standardmäßig: *der*, *die*, *das*, *aber*, *und*.
+- Da stets die Wörter mit den höchsten Wahrscheinlichkeiten vorgeschlagen werden, können die Vorschläge in einer Endlosschleife enden. Grade mit den zuvor genannten Artikeln ist dies ein wahrscheinliches Szenario.
+- Das Hinzufügen weiterer LSTM-Schichten könnte die Genauigkeit erhöhen, da Beziehungen zwischen den Wörtern besser erfasst werden könnten.
+-Erkenntnisse aus den Tests mit kleinen Datensätzen wurden auf den kompletten Datensatz übernommen. Ob diese Annahmen so 1 zu 1 übernommen werden können ist unwahrscheinlich. Eine erneute Anpassung könnte bessere Ergebnisse liefern.
+
+### Kann es zu Datenschutzproblem kommen?
+
+Das Modell reproduziert bei seltenen Wortfolgen teilweise exakt den Originaltext, bei häufigen eher plausible Alternativen. Dies ist ein Hinweis auf partielles Auswendiglernen statt reiner Generalisierung. Bei sensiblen statt öffentlichen Trainingsdaten könnte dieser Effekt personenbezogene Informationen ungewollt preisgeben. Grade bei wenig Trainingdaten (wie in diesem Fall), könnte das zum Problem werden.
